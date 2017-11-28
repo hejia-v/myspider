@@ -1,0 +1,8 @@
+psycopg2
+requests
+PyQuery
+pymongo>=2.7.1
+sphinx
+Pillow>=2.0.0
+python-dateutil>=2.1.0
+mongoengine

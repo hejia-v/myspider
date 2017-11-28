@@ -1,0 +1,4 @@
+*.pyc
+.data.d
+.trash
+log/
