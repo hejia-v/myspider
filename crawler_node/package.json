@@ -1,0 +1,29 @@
+{
+  "name": "crawler_node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "demo.js",
+  "dependencies": {},
+  "devDependencies": {
+    "async": "^2.0.1",
+    "cheerio": "^0.20.0",
+    "co": "^4.6.0",
+    "mongoose": "^4.5.7",
+    "request": "^2.74.0",
+    "superagent": "^2.1.0",
+    "thunkify": "^2.1.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node demo.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.oschina.net/hejia_v/crawler_node"
+  },
+  "keywords": [
+    "crawler"
+  ],
+  "author": "hejia",
+  "license": "ISC"
+}
