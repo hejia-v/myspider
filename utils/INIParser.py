@@ -6,56 +6,28 @@ from utils import utils
 logger = logging.getLogger('crawler')
 
 
-class Data(object):
-    def __init__(self):
-        self.__dict__["data"] = {}
-
-    def __setattr__(self, name, value):
-        self.__dict__["data"][name] = value
-
-    def __getattr__(self, name):
-        try:
-            return self.__dict__["data"][name]
-        except Exception:
-            raise Exception(f'no field[{name}]')
-
-    def __repr__(self):
-        return f'Data{str(self.__dict__["data"])}'
-
-
 class Section(object):
     def __init__(self, stype):
         pass
 
+
 class INI(object):
-    def __init__(self, parent=None:INI):
+    def __init__(self):
         self.data = {}
-        # self.parent = None
-        # self.tag = None
-        # self.fi
 
     def __getitem__(self, name):
-        if self.parent is not None:
-            return self.parent[name]
         return self.data[name]
 
     def __setitem__(self, name, value):
-        if self.parent is not None:
-            self.parent[name] = value
-            return
         self.data[name] = value
-    
-    # def sub(self, subname):
-    #     for key in self.data.keys():
-    #         pass
-    #         if key.startswith(f'{subname}.'):
-    #             pass
-    #     d=self[dd]
+
+    def __repr__(self):
+        return f'INI{self.data}'
 
 
 class INIParser(object):
-    def __init__(self, content):
-        self.parser(content)
+    def __init__(self):
+        pass
 
     def parser(self, content:str):
         lines = [l.strip() for l in content.split('\n') if l.strip()]
@@ -64,18 +36,14 @@ class INIParser(object):
         ini = INI()
         for s in section_list:
             self.parser_section(ini, s)
-        # print(content)
-        # logger.info(section_list)
-        print(ini)
+        logger.info(ini)
+        return ini
 
     def parser_section(self, ini, lines):
         header = lines[0]
         lines = lines[1:]
         stype, header = self.parser_header(header)
         ini[header] = self.parser_section_body(stype, lines)
-        logger.info(stype)
-        logger.info(header)
-        logger.info(lines)
 
     def parser_header(self, header):
         header = header[1:-1].strip()
@@ -89,13 +57,12 @@ class INIParser(object):
         return stype, header
 
     def parser_section_body(self, stype, lines):
-        data = None
         if stype == 'dict':
             data = {}
             tmp = [l.partition('=') for l in lines]
             tmp = [(x[0].strip(), x[2].strip()) for x in tmp]
             for (k, v) in tmp:
-                data[k] = v  # 暂时全部用字符串比较安全
+                data[k] = self.parser_value(k, v)
         elif stype == 'list':
             data = lines
         else:
@@ -117,8 +84,8 @@ class INIParser(object):
 
     @staticmethod
     def read(filename):
-        obj = None
         with open(filename, 'rt', encoding='utf8') as fd:
             text = fd.read()
-            obj = INIParser(text)
-        return obj
+            parser = INIParser()
+            ini = parser.parser(text)
+        return ini
