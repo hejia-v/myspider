@@ -5,7 +5,9 @@ import os
 
 # import weib
 from utils import log
+from utils import utils
 from utils.INIParser import INIParser
+from weibo import crawler as weibo_crawler
 
 log.init_logger('crawler')
 logger = logging.getLogger('crawler')
@@ -13,11 +15,12 @@ sys.stderr = log.ErrOutPutToLogger("crawler")
 
 
 def main():
-    cur_dirname = os.path.dirname(os.path.abspath(__file__))
-    ini_filename = os.path.join(cur_dirname, 'data/input.ini')
-    ini_filename = os.path.normpath(ini_filename)
+    ini_filename = utils.get_path_with_base_file(__file__, 'data/input.ini')
     config = INIParser.read(ini_filename)
     pass
+    if config['default']['crawler_type'] == 'weibo':
+        pass
+        weibo_crawler.start(config)
     print(ini_filename)
     # logger.info(ini_filename)
 

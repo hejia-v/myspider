@@ -27,16 +27,30 @@ class Section(object):
     def __init__(self, stype):
         pass
 
-
-class INI(Data):
-    def __init__(self):
-        Data.__init__(self)
+class INI(object):
+    def __init__(self, parent=None:INI):
+        self.data = {}
+        # self.parent = None
+        # self.tag = None
+        # self.fi
 
     def __getitem__(self, name):
-        return getattr(self, name)
+        if self.parent is not None:
+            return self.parent[name]
+        return self.data[name]
 
     def __setitem__(self, name, value):
-        setattr(self, name, value)
+        if self.parent is not None:
+            self.parent[name] = value
+            return
+        self.data[name] = value
+    
+    # def sub(self, subname):
+    #     for key in self.data.keys():
+    #         pass
+    #         if key.startswith(f'{subname}.'):
+    #             pass
+    #     d=self[dd]
 
 
 class INIParser(object):
@@ -81,18 +95,25 @@ class INIParser(object):
             tmp = [l.partition('=') for l in lines]
             tmp = [(x[0].strip(), x[2].strip()) for x in tmp]
             for (k, v) in tmp:
-                if v == '':
-                    raise Exception(f'[{k}] miss value')
-                elif v.lower() == 'true':
-                    v = True
-                elif v.lower() == 'false':
-                    v = False
-                pass
+                data[k] = v  # 暂时全部用字符串比较安全
         elif stype == 'list':
-            pass
+            data = lines
         else:
             raise Exception('unsupported type')
         return data
+
+    def parser_value(self, key, value):
+        if value == '':
+            raise Exception(f'[{key}] miss value')
+        elif value.lower() == 'true':
+            value = True
+        elif value.lower() == 'false':
+            value = False
+        elif value.isdigit():
+            value = int(value)
+        elif utils.is_float(value):
+            value = float(value)
+        return value
 
     @staticmethod
     def read(filename):

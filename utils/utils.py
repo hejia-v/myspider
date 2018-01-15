@@ -7,8 +7,9 @@ Created on 2017年5月30日
 import os
 import time
 import difflib
-from functools import wraps
 import colorama
+from functools import wraps
+from collections import Counter
 
 colorama.init(autoreset=True)
 
@@ -107,4 +108,18 @@ def split(seq, condition):
         s.append(l)
     if s:
         result.append(s)
+    return result
+
+def is_float(s):
+    for c in set(s):
+        if (not c.isdigit()) and c != '.':
+            return False
+    if Counter(s)['.'] > 1:
+        return False
+    return True
+
+def get_path_with_base_file(basefile, *arg):
+    base_dir = os.path.dirname(os.path.abspath(basefile))
+    result = os.path.join(base_dir, *arg)
+    result = os.path.normpath(result)
     return result
