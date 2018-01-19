@@ -18,13 +18,16 @@ SCRIPT_PATH = utils.get_path_with_base_file(__file__, 'parser.mjs')
 
 session = requests.session()
 
-def debug_record(text):
-    with open('debug.html', 'wt', encoding='utf-8') as fd:
+def debug_dump(text):
+    with open('debug', 'wt', encoding='utf-8') as fd:
         fd.write(text)
 
+def debug_dump_json(data):
+    with open('debug', 'wt', encoding='utf-8') as fd:
+        json.dump(data, fd, indent=4)
 
 def debug_test():
-    with open('debug.html', 'rt', encoding='utf-8') as fd:
+    with open('debug', 'rt', encoding='utf-8') as fd:
         text = fd.read()
     return text
 
@@ -60,7 +63,7 @@ def login():
     r = get(FAVHOME)
     # r.encoding = 'gbk'
     text = r.text
-    # debug_record(text)
+    # debug_dump(text)
 
     result = nodejs.run_nodejs(SCRIPT_PATH, ['1'], text)
     json_obj = json.loads(result, encoding='utf-8')
@@ -103,21 +106,21 @@ def crawler_user_post_list(uid):
         data = r.json()
         cards = data['data']['cards']
         print(cards)
-        debug_record(str(cards))
-        bsucc = mdata.add_card_list_data(cards)
-        if not bsucc:
-            break
+        debug_dump_json(str(cards))
+        # bsucc = mdata.add_card_list_data(uid, cards)
+        # if not bsucc:
+        #     break
         break
         wait()
-    # debug_record(str(r.cookies.get_dict()))
-    # debug_record(str(data))
+    # debug_dump(str(r.cookies.get_dict()))
+    # debug_dump(str(data))
 
 
 
     # r = get(url)
     # r.encoding = 'utf-8'
     # text = r.text
-    # debug_record(text)
+    # debug_dump(text)
     # text = text.encode('gbk').decode('utf-8')
 
     # post can't change
@@ -143,5 +146,10 @@ def start(config):
 
     # login()
     # time.sleep(1.5)
-    for uid in uid_list:
-        crawler_user_post_list(uid)
+
+    text=debug_test()
+    cards=json.loads(text)
+    bsucc = mdata.add_card_list_data('2159243701', cards)
+
+    # for uid in uid_list:
+    #     crawler_user_post_list(uid)

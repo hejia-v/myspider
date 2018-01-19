@@ -16,17 +16,16 @@ def read_json_file(uid):
             data = json.load(f)
     return data
 
+
 def write_json_file(uid, data):
     filename = os.path.join(g_weibo_data_dir, f'{uid}.json')
-    with open(filename, 'w', encoding='utf-8',indent=4) as f:
-        json.dump(data, f)
-    pass
+    if not os.path.exists(g_weibo_data_dir):
+        os.mkdir(g_weibo_data_dir)
+    with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=4)
 
 
 def add_card(uid, card_data):
     data = read_json_file(uid)
     data.append(card_data)
     write_json_file(uid, data)
-
-    pass
-
